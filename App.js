@@ -1,77 +1,75 @@
-import * as React from "react";
-import { Button, View, Text } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text } from "react-native";
+import * as firebase from "firebase";
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
 
-import HomeScreen from "./Home";
+import Landing from "./components/auth/Landing";
+import Register from "./components/auth/Register";
+import Login from "./components/auth/Login";
 
-function SettingsScreen({ navigation }) {
-    return (
-        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-            <Text>Settings Screen</Text>
-            <Button
-                title="Go to Profile"
-                onPress={() => navigation.navigate("Profile")}
-            />
-        </View>
-    );
+const firebaseConfig = {
+    apiKey: "AIzaSyDYuBvk8l83TLFUNT-QQ_FJRsjgk3jb0NA",
+    authDomain: "imagigram-e3a48.firebaseapp.com",
+    projectId: "imagigram-e3a48",
+    storageBucket: "imagigram-e3a48.appspot.com",
+    messagingSenderId: "43882132994",
+    appId: "1:43882132994:web:861a5fec9f4c8943b8591b",
+};
+
+if (firebase.apps.length === 0) {
+    firebase.initializeApp(firebaseConfig);
 }
 
-function ProfileScreen({ navigation }) {
-    return (
-        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-            <Text>Profile Screen</Text>
-            <Button
-                title="Go to Settings"
-                onPress={() => navigation.navigate("Settings")}
-            />
+const Stack = createStackNavigator();
+
+const App = () => {
+    const [isLoading, setIsLoading] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+        firebase.auth().onAuthStateChanged(user => {
+            if (!user) {
+                setIsLoggedIn(false);
+            } else {
+                setIsLoggedIn(true);
+            }
+            setIsLoading(false);
+        });
+    }, []);
+
+    const Loading = () => (
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+            <Text>Carregando...</Text>
         </View>
     );
-}
 
-function DetailsScreen({ navigation }) {
-    return (
-        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-            <Text>Details Screen</Text>
-            <Button
-                title="Go to Details... again"
-                onPress={() => navigation.push("Details")}
-            />
-        </View>
-    );
-}
-const Tab = createBottomTabNavigator();
-const SettingsStack = createNativeStackNavigator();
-const HomeStack = createNativeStackNavigator();
-
-export default function App() {
-    return (
+    const LoggedOut = () => (
         <NavigationContainer>
-            <Tab.Navigator screenOptions={{ headerShown: false }}>
-                <Tab.Screen name="First">
-                    {() => (
-                        <SettingsStack.Navigator>
-                            <SettingsStack.Screen
-                                name="Settings"
-                                component={SettingsScreen}
-                            />
-                            <SettingsStack.Screen
-                                name="Profile"
-                                component={ProfileScreen}
-                            />
-                        </SettingsStack.Navigator>
-                    )}
-                </Tab.Screen>
-                <Tab.Screen name="Second">
-                    {() => (
-                        <HomeStack.Navigator>
-                            <HomeStack.Screen name="Home" component={HomeScreen} />
-                            <HomeStack.Screen name="Details" component={DetailsScreen} />
-                        </HomeStack.Navigator>
-                    )}
-                </Tab.Screen>
-            </Tab.Navigator>
+            <Stack.Navigator>
+                <Stack.Screen
+                    name="Landing"
+                    component={Landing}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen name="Register" component={Register} />
+                <Stack.Screen name="Login" component={Login} />
+            </Stack.Navigator>
         </NavigationContainer>
     );
-}
+
+    const LoggedIn = () => (
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+            <Text>Bem Vindo!</Text>
+        </View>
+    );
+
+    if (isLoading) {
+        return <Loading />;
+    }
+    if (isLoggedIn) {
+        return <LoggedIn />;
+    }
+    return <LoggedOut />;
+};
+export default App;
