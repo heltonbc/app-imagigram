@@ -73,3 +73,5 @@ const App = () => {
     return <LoggedOut />;
 };
 export default App;
+
+// Configurando o FireBase, Autenticação e Rotas Condicionais.
