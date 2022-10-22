@@ -74,4 +74,5 @@ const App = () => {
 };
 export default App;
 
-// Configurando o FireBase, Autenticação e Rotas Condicionais.
+// Autenticação e Rotas Condicionais.
+/*  */
