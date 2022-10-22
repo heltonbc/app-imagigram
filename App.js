@@ -73,6 +73,3 @@ const App = () => {
     return <LoggedOut />;
 };
 export default App;
-
-// Autenticação e Rotas Condicionais.
-/*  */
