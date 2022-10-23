@@ -11,11 +11,17 @@ const Register = ({ navigation }) => {
         const res = await firebase.auth().createUserWithEmailAndPassword(email, password);
     };
 
+    // components imported from react native
     return (
         <View>
             <TextInput placeholder="Nome" onChange={setName} />
             <TextInput placeholder="E-mail" onChange={setEmail} />
-            <TextInput placeholder="Password" secureTextEntry onChange={setPassword} />
+            <TextInput
+                placeholder="Password"
+                secureTextEntry
+                onChange={setPassword}
+            />{" "}
+            {/* imported too react native */}
             <Button title="Create Account" onPress={handleSubmit} />
         </View>
     );
